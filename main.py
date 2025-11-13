@@ -7,6 +7,7 @@ from player import *
 from wall import create_wall
 from flag import create_flag
 from maze import create_maze
+from missile import update_missile, create_missile
 
 num_enemy_killed = 0
 pygame.init()
@@ -17,6 +18,7 @@ gameon = False # If this is True the actual game is running. If it is flase, we 
 
 
 wall_list = []
+missile_list = []
 
 clock = pygame.time.Clock()
 pygame.time.set_timer(ADDENEMY, 5000)
@@ -31,11 +33,17 @@ while running:
             if event.key == K_1:
                 gameon = True
             if event.key == K_SPACE and gameon:
-                fire_player(player)
+                fire_player(player, missile_list)
         elif event.type == QUIT:
             running = False
     screen.fill([0, 0, 0])
     if not gameon:
+        # aggiungi un immagine di sfondo, falla grande quanto lo schermo
+        # carica il file images/boom.png
+        background_image = pygame.image.load("images/boom.png")
+        background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        screen.blit(background_image, (0, 0))   
+
         surf = font.Font(None,36).render('Premi 1 per iniziare...', True, [255,255,255])
         screen.blit(surf, (SCREEN_WIDTH/2-surf.get_width()/2, SCREEN_HEIGHT/2))
         if len(wall_list) == 0:
@@ -45,9 +53,14 @@ while running:
     if gameon:
         win = update_player(player, pygame.key.get_pressed(), wall_list, flag)
 
+        for missile in missile_list:
+            update_missile(missile)
+
         # draw elements
         for wall in wall_list:
             screen.blit(wall["surf"], wall["rect"])
+        for missile in missile_list:
+            screen.blit(missile["surf"], missile["rect"])
         screen.blit(player["surf"], player["rect"])
         screen.blit(flag["surf"], flag["rect"])
 

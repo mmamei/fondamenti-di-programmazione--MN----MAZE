@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 from constants import *
-
+from missile import create_missile
 
 player_image = pygame.image.load('images/tank1.png')
 player_image = pygame.transform.scale(player_image, (WALL_DX*0.8,WALL_DY*0.8))
@@ -52,5 +52,7 @@ def update_player(player, pressed_keys, wall_list, flag):
         return True
     return False
 
-def fire_player(player):
+def fire_player(player, missile_list):
     print('fire')
+    m = create_missile(player["rect"].centerx, player["rect"].centery)
+    missile_list.append(m)
