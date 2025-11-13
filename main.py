@@ -36,15 +36,15 @@ while running:
                 fire_player(player, missile_list)
         elif event.type == QUIT:
             running = False
-    screen.fill([0, 0, 0])
+    screen.fill([0, 0, 40])
     if not gameon:
         # aggiungi un immagine di sfondo, falla grande quanto lo schermo
         # carica il file images/boom.png
-        background_image = pygame.image.load("images/boom.png")
+        background_image = pygame.image.load("images/sfondo.png")
         background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
         screen.blit(background_image, (0, 0))   
 
-        surf = font.Font(None,36).render('Premi 1 per iniziare...', True, [255,255,255])
+        surf = font.Font(None,60).render('Premi 1 per iniziare...', True, [255,255,255])
         screen.blit(surf, (SCREEN_WIDTH/2-surf.get_width()/2, SCREEN_HEIGHT/2))
         if len(wall_list) == 0:
             player = create_player()
@@ -54,7 +54,8 @@ while running:
         win = update_player(player, pygame.key.get_pressed(), wall_list, flag)
 
         for missile in missile_list:
-            update_missile(missile)
+           if update_missile(missile, wall_list):
+                missile_list.remove(missile)
 
         # draw elements
         for wall in wall_list:
